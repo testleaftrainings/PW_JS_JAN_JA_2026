@@ -1,0 +1,372 @@
+
+Q1.How do Playwright locators identify elements on a web page, and why are they more efficient than XPath or CSS selectors?
+
+Playwright locators identify the elements using accessibility-based selectors and automatically wait for elements to be visible, enabled, and stable before performing actions.
+
+Playwright locators are more efficient than XPath or CSS because they dynamically re-evaluate the DOM and auto-wait for element readiness, ensuring higher test stability and fewer flaky failures in dynamic applications.
+The below playwright locator methods are used to identify elements on a page.
+
+
+getByRole() – based on accessibility roles, ex: Button,link 
+page.getByRole('button', { name: 'Login' }).click();
+
+getByText() – based on visible text, ex: Text inside elements
+page.getByText('Welcome').isVisible();
+
+getByLabel() – for form inputs with labels, ex: Input fields linked to <label>
+page.getByLabel('Username').fill('admin');
+
+getByTestId() – using test-specific attributes, ex: Stable selectors added for testing
+page.getByTestId('submit-btn').click();
+
+getByPlaceholder()-Placeholders are commonly used in search fields and login inputs, ex: placeholder text
+page.getByPlaceholder('Enter email').fill('test@mail.com');
+
+getByAltText()-For images with alt attribute, ex: image
+page.getByAltText('Company Logo').isVisible();
+
+getByTitle()- for elements with title attribute ex: tooltip (tooltip is a small informational message shown on hover or focus to explain an element)
+page.getByTitle('Refresh').click();
+
+locator() – it is generic way to find elements using CSS or XPath when accessibility-based locators (getByRole, getByLabel, etc.) are not available or 
+reliable.It’s flexible because you can chain filters, text matches, nth elements, etc.
+
+await page.locator('lightning-base-combobox-item').filter({ hasText: 'Needs Analysis' }) .click();
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q2. What is the significance of optional parameter in typescript?
+
+In TypeScript, optional parameters allow a function to be called with or without that argument, making the function more flexible and avoiding errors when a value 
+is not provided.
+
+Example: Optional Function Parameter(TS)
+-------------------------------------------
+
+function greet(name?: string) {
+  if (name) {
+    console.log(`Hello, ${name}!`);
+  } else {
+    console.log("Hello, Guest!");
+  }
+}
+
+greet("Gauthami"); // Hello, Gauthami!
+greet();            // Hello, Guest!
+
+
+The ? after a parameter makes it optional — no error even if you don’t pass that argument.
+Without ?, the argument is required and calling the function without it will throw an error//❌ Error – Argument required.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q3. How does TypeScript determine the data type of a variable when no type is not mentioned?
+
+TypeScript automatically assigns the datatype based on the value given to the variable. This is called type inference.
+
+Implicit inference
+------------------
+Implicit type inference means TypeScript automatically understands the data type of a variable based on the value assigned to it.
+
+let city = "Chennai";   // inferred as string
+let count = 100;        // inferred as number
+let isActive = true;    // inferred as boolean
+
+explicit inference
+------------------
+
+Explicit type inference is when you manually specify the data type of a variable in TypeScript.
+
+ex: let age: number = 25;
+    let name: string = "Gauthami"; 
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q4. Why do developers prefer TypeScript over JavaScript in large applications?
+
+1️) TypeScript is a superset of JavaScript that adds type checking features.
+   JavaScript is a scripting language mainly used to make web pages interactive.
+
+2) TypeScript supports static typing — you declare types before running the code.
+   JavaScript uses dynamic typing — types are decided while the code runs.
+
+3) TypeScript catches errors during compilation, before the program runs.
+   JavaScript finds errors only at runtime, when the program is executing.
+
+4) TypeScript code must be compiled (transpiled) into JavaScript to run in a browser.
+   JavaScript runs directly in browsers or Node.js without compilation.
+
+5) TypeScript provides better code safety because of strict type checking.
+   JavaScript is less safe since it allows type mistakes during execution.
+
+6) TypeScript gives better editor support — autocompletion, IntelliSense, and hints.
+   JavaScript has limited editor support for such advanced features.
+
+7) TypeScript is better for large projects where code maintenance matters.
+   JavaScript suits smaller or quick prototype projects.
+
+8) TypeScript files have .ts extension.
+   JavaScript files have .js extension.
+
+9) TypeScript was developed by Microsoft in 2012.
+   JavaScript was developed by Netscape in 1995.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q5: How can you define a custom type for a product object in TypeScript, and why is it useful?
+
+A Type Alias in TypeScript lets you create a custom type with a name, which can be reused anywhere in your code. It is useful for making complex or repeated types,
+more readable and maintainable.
+
+Type Alias is like a form you fill for every test user — same fields, no mistakes.
+
+
+// Define a Type Alias for a Product
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  inStock: boolean;
+};
+
+// Create objects using the Product type
+let item1: Product = {
+  id: 101,
+  name: "Laptop",
+  price: 75000,
+  inStock: true
+}
+
+let item2: Product = {
+  id: 102,
+  name: "Mouse",
+  price: 1200,
+  inStock: false
+}
+
+Product → Type Alias (like a blueprint for objects)
+item1 / item2 → Objects created using that blueprint
+
+
+// Example test function
+
+
+function checkProductAvailability(product: Product) {
+  if (product.inStock) {
+    console.log(`${product.name} is available for purchase`);
+  } else {
+    console.log(`${product.name} is currently out of stock`);
+  }
+}
+
+checkProductAvailability(item1); // Laptop is available for purchase
+checkProductAvailability(item2); // Mouse is currently out of stock
+
+Benefits:
+---------
+
+Makes object structures consistent across the code.
+Improves readability.
+Reusable for multiple objects or function parameters.
+
+
+Type union (|)-OR
+-----------------
+
+type TestStatus = "pass" | "fail";
+
+//test function
+function printTestResult(status: TestStatus) {
+  console.log(`Test status is: ${status}`);
+}
+
+//usage
+printTestResult("pass"); // Test status is: pass
+printTestResult("fail"); // Test status is: fail
+
+Note:
+-----
+
+Union means either this OR that.
+Here, test status can be only pass or fail — nothing else
+printTestResult("skipped"); // TypeScript error
+
+
+Type Intersection (&) — AND
+------------------------------
+
+A value must have all properties from multiple types.
+
+Example
+
+// Base test data
+type User = {
+  username: string;
+  email: string;
+};
+
+// Additional test info
+type TestInfo = {
+  isActive: boolean;
+};
+
+// Intersection Type
+type TestUser = User & TestInfo;
+
+// Test data
+const testUser: TestUser = {
+  username: "Gauthami",
+  email: "gauthami@testleaf.com",
+  isActive: true
+};
+
+// Test function
+function runUserTest(user: TestUser) {
+  if (user.isActive) {
+    console.log(`Running test for ${user.username}`);
+  } else {
+    console.log(`Skipping test for ${user.username}`);
+  }
+}
+
+// Usage
+runUserTest(testUser); // Running test for Gauthami
+
+Note:
+-----
+
+Intersection means this AND that.
+TestUser must have everything from User and TestInfo
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q6. How does datatype `any` differ from `unknown` in TypeScript?
+
+Ans: these are the dataTypes available in Typescript
+
+1) any
+
+Definition: any allows any type of value.
+TypeScript stops checking type safety for that variable.
+
+let value: any;
+
+value = 10;
+value = "Hello";
+value = true;
+
+console.log(value); // TypeScript allows everything
+
+Pros: Very flexible
+Cons: No type safety → can lead to runtime errors
+
+2) unknown
+
+Definition:unknown also allows any type, but TypeScript forces you to check the type before using it.
+Safer than any.
+
+EX:
+let value: unknown;
+
+value = 10;
+value = "Hello";
+
+// console.log(value.toUpperCase()); //  Error: Object is of type 'unknown'
+
+// Type check needed
+if (typeof value === "string") {
+  console.log(value.toUpperCase()); // Works
+}
+
+Pros: Flexible and type-safe
+Cons: Need to do type checks before using
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q7. what are frames and how do you interact with frames in Playwright?
+
+1) In a web page, a frame is basically an embedded HTML document inside another HTML document. There are two common types:
+
+<iframe> (inline frame)
+Most common type of frame.
+It loads another webpage or content inside the main page.
+
+<frame> / <frameset> (old, less common)
+Used in legacy websites, not recommended today.
+
+Syntax:
+-------
+
+page.frames()-> frames() method helps to get the collection of frames that is present in a webpage.
+
+page.frameLocator(selector) → Locates elements inside a frame (recommended).
+
+page.frame({ name | url | index }) → Gets the frame object to interact with.
+
+In playwright, main page is also considered as frame and index starts from '0'
+
+2) Why frames matters in automation
+
+Since frames have their own DOM, normal page locators like page.locator() won’t work directly inside a frame.
+You need to switch context to the frame to interact with its elements.
+
+3) How to interact with frames in Playwright
+
+we can interact with frames using 
+
+a)By name or ID
+const frame = page.frame({ name: 'myFrame' });
+
+
+b) By URL
+const frame = page.frame({ url: /example.com/ });
+
+
+e) By element handle
+
+const frameElement = await page.locator('#myFrame');
+const frame = await frameElement.frame();
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q8. What is the difference between `page.frame()` and `frameLocator()`?
+
+
+page.frame()
+------------
+Returns a Frame object, representing a specific <iframe> inside the page.
+
+Definition:
+const frame = page.frame({ name: 'iframe-name' });
+
+
+Parameters:
+name: Name of the iframe
+url: URL of the iframe (can use regex)
+Or any other frame identification
+
+Usage: You can then call methods like fill(), click(), locator() on the frame object.
+
+Example:
+
+//const frame1=page.frame({url:"https://www.leafground.com/default.xhtml"})
+//await frame1?.locator("#Click").click()
+
+page.frameLocator()
+-------------------
+Returns a FrameLocator object, which allows locator-based interaction inside a frame.
+
+Definition:
+const frameLocator = page.frameLocator('#iframe-selector');
+
+You can chain locators to interact with elements inside the iframe. Works well for nested frames.
+
+Example:
+
+//nested frame
+
+
+//outer frame -> inner frame
+await page.frameLocator("(//iframe)[3]").frameLocator("#frame2").locator("#Click").click()
+//await page.frameLocator("#frame2").locator("#Click").click()
+await page.waitForTimeout(5000)
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
